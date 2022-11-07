@@ -29,8 +29,12 @@ class Parser:
                 elif split_line[0] == "vn":
                     vn_array.append([float(i) for i in split_line[1:]])
                 elif split_line[0] == "f":
-                    f_array.append([int(i.split("/")[0]) - 1 for i in split_line[1:]])
-
+                    fs = split_line[1:]
+                    for i in range(2, len(fs)):
+                        f_array.append(
+                            [int(fs[0].split("/")[0]) - 1, int(fs[i - 1].split("/")[0]) - 1,
+                             int(fs[i].split("/")[0]) - 1]
+                        )
         self.v_array = np.array(v_array)
         self.vt_array = np.array(vt_array)
         self.vn_array = np.array(vn_array)

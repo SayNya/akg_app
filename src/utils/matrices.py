@@ -59,11 +59,16 @@ def get_model_matrix(x_translation, y_translation, z_translation, x_angle, y_ang
     )
 
 
-def get_view_matrix(eye, target):
-    up = np.array([0, 1, 0])
-    z_axis = normalize(eye - target)
-    x_axis = normalize(np.cross(z_axis, up))
-    y_axis = np.cross(x_axis, z_axis)
+def get_view_matrix(eye, pitch, yaw):
+    cos_pitch = np.cos(pitch)
+    sin_pitch = np.sin(pitch)
+    cos_yaw = np.cos(yaw)
+    sin_yaw = np.sin(yaw)
+
+    x_axis = np.array([cos_yaw, 0, -sin_yaw])
+    y_axis = np.array([sin_yaw * sin_pitch, cos_pitch, cos_yaw * sin_pitch])
+    z_axis = np.array([sin_yaw * cos_pitch, -sin_pitch, cos_pitch * cos_yaw])
+
     return np.array([
         [x_axis[0], x_axis[1], x_axis[2], -(x_axis @ eye)],
         [y_axis[0], y_axis[1], y_axis[2], -(y_axis @ eye)],
@@ -72,12 +77,23 @@ def get_view_matrix(eye, target):
     ])
 
 
-def get_projection_matrix(fov, z_near=1.0, z_far=5):
+def get_projection_matrix(fov, z_near=1, z_far=10):
     return np.array([
         [1 / (settings.width / settings.height * np.tan(fov / 2)), 0, 0, 0],
         [0, 1 / np.tan(fov / 2), 0, 0],
         [0, 0, z_far / (z_near - z_far), (z_near * z_far) / (z_near - z_far)],
         [0, 0, -1, 0],
+    ])
+
+
+def get_projection_matrix_test():
+    z_near = 0
+    z_far = 255
+    return np.array([
+        [2 / settings.width, 0, 0, 0],
+        [0, 2 / settings.height, 0, 0],
+        [0, 0, 1 / (z_near - z_far), z_near / (z_near - z_far)],
+        [0, 0, 0, 1],
     ])
 
 

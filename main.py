@@ -1,8 +1,11 @@
+import sys
 from tkinter import Tk
+
+from PyQt6.QtWidgets import QApplication
 
 from src.model_object import ModelObject
 from src.parser import Parser
-from src.tkinter_window import Blender
+from src.qt_window import Blender
 
 
 def main():
@@ -11,9 +14,9 @@ def main():
 
     model_object = ModelObject(local_cords=parser.v_array, indices=parser.f_array)
 
-    root = Tk()
-    Blender(model_object)
-    root.mainloop()
+    app = QApplication([])
+    ex = Blender(model_object)
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':
